@@ -8,7 +8,7 @@ import flask_socketio
 import models 
 import editdistance
 
-GROCERY_BROADCAST_CHANNEL = 'Grocery list received'
+CHAT_HISTORY_BROADCAST_CHANNEL = 'Chat history received'
 
 app = flask.Flask(__name__)
 
@@ -34,13 +34,14 @@ db.app = app
 db.create_all()
 db.session.commit()
 
-def emit_grocery_list(channel):
-    grocery_list = [ \
+def emit_chat_history(channel):
+    chat_history = [ \
         db_item.item for db_item \
         in db.session.query(models.Groceries).all()]
+    chat_history.reverse() # Want newest message first
         
     socketio.emit(channel, {
-        'groceryList': grocery_list
+        'chatHistory': chat_history
     })
 
 
@@ -51,33 +52,26 @@ def on_connect():
         'test': 'Connected'
     })
     
-    emit_grocery_list(GROCERY_BROADCAST_CHANNEL)
+    emit_chat_history(CHAT_HISTORY_BROADCAST_CHANNEL)
     
 
 @socketio.on('disconnect')
 def on_disconnect():
     print ('Someone disconnected!')
 
-@socketio.on('new item input')
-def on_new_address(data):
-    print("Got an event for adding this item to the grocery list:", data)
+@socketio.on('new message')
+def on_new_message(data):
+    print("Got an event for adding this message to the chat history:\n\t{}: {}".format(data["sender"], data["msg"]))
+
+    db.session.add(models.Groceries("{}: {}".format(data["sender"], data["msg"])));
+    db.session.commit();
     
-    # Assume item is new, but check to see if that is really the case
-    new_item = True
-    for dbItem in db.session.query(models.Groceries).all():
-        if editdistance.eval(data["item"], dbItem.item) <= 2:
-            new_item = False
-            break
-    if new_item:
-        db.session.add(models.Groceries(data["item"]));
-        db.session.commit();
-        
-        emit_grocery_list(GROCERY_BROADCAST_CHANNEL)
+    emit_chat_history(CHAT_HISTORY_BROADCAST_CHANNEL)
 
 @app.route('/')
 def index():
     models.db.create_all()
-    emit_grocery_list(GROCERY_BROADCAST_CHANNEL)
+    emit_chat_history(CHAT_HISTORY_BROADCAST_CHANNEL)
 
     return flask.render_template("index.html")
 

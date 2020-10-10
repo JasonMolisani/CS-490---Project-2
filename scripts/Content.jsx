@@ -6,18 +6,18 @@ import { Button } from './Button';
 import { Socket } from './Socket';
 
 export function Content() {
-    const [items, setItems] = React.useState([]);
+    const [messages, setMessages] = React.useState([]);
     
-    function getNewItems() {
+    function getMessages() {
         React.useEffect(() => {
-            Socket.on('Grocery list received', (data) => {
-                console.log("Received grocery list from server: " + data['groceryList']); // TODO rework data fields
-                setItems(data['groceryList']);
+            Socket.on('Chat history received', (data) => {
+                console.log("Received Chat history from server: " + data['chatHistory']);
+                setMessages(data['chatHistory']);
             })
         });
     }
     
-    getNewItems();
+    getMessages();
 
     return (
         <div>
@@ -26,8 +26,8 @@ export function Content() {
             </div>
             <div id="messageHistory">
                 <ul>
-                    {items.map((item, index) =>
-                        <li key={index}>{item}</li>)}
+                    {messages.map((message, index) =>
+                        <li key={index}>{message}</li>)}
                 </ul>
             </div>
         </div>

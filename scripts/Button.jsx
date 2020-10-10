@@ -4,12 +4,12 @@ import { Socket } from './Socket';
 function handleSubmit(event) {
     let newMessage = document.getElementById("message_input");
     let sender = document.getElementById("sender_input");
-    Socket.emit('new item input', {
-        'item': newMessage.value,
+    Socket.emit('new message', {
+        'msg': newMessage.value,
         'sender': sender.value,
     });
     
-    console.log('Sent the grocery item ' + newMessage.value + ' to server!');
+    console.log('Sent the message ' + newMessage.value + ' from ' + sender.value + ' to server!');
     newMessage.value = ''
     
     event.preventDefault();
