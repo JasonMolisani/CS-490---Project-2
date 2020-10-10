@@ -1,0 +1,44 @@
+body {
+    background-color: #FFFFFF;
+}
+
+#messageSubmission {
+  margin: auto;
+  width: 66%;
+  border: 3px solid green;
+  padding: 0px;
+}
+
+#messageHistory {
+  margin: auto;
+  width: 66%;
+  border: 3px solid green;
+  padding: 0;
+}
+
+li {
+    list-style: none;
+    border: 1px solid;
+}
+
+ul {
+    padding: 0px;
+    margin: 0px;
+    border: 0px;
+}
+
+form {
+    margin: 0px;
+}
+
+#send_button {
+    width: 25%;
+}
+
+#sender_input {
+    width: 25%;
+}
+
+#message_input {
+    width: 50%;
+}

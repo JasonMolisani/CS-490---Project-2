@@ -21,7 +21,9 @@ export function Content() {
 
     return (
         <div>
-            <Button id="messageSubmission"/>
+            <div id="messageSubmission">
+                <Button />
+            </div>
             <div id="messageHistory">
                 <ul>
                     {items.map((item, index) =>

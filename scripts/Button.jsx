@@ -20,7 +20,7 @@ export function Button() {
         <form onSubmit={handleSubmit}>
             <input id="sender_input" placeholder="Enter username here"></input>
             <input id="message_input" placeholder="Enter chat message here"></input>
-            <button>Send Message</button>
+            <button id="send_button">Send Message</button>
         </form>
     );
 }
