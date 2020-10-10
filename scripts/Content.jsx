@@ -21,12 +21,13 @@ export function Content() {
 
     return (
         <div>
-            <h1>Grocery List</h1>
-                <ol>
+            <Button id="messageSubmission"/>
+            <div id="messageHistory">
+                <ul>
                     {items.map((item, index) =>
                         <li key={index}>{item}</li>)}
-                </ol>
-            <Button />
+                </ul>
+            </div>
         </div>
     );
 }
