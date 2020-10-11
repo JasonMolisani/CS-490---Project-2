@@ -5,8 +5,7 @@ import os
 import flask
 import flask_sqlalchemy
 import flask_socketio
-import models 
-import editdistance
+import models
 
 CHAT_HISTORY_BROADCAST_CHANNEL = 'Chat history received'
 
