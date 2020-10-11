@@ -18,11 +18,7 @@ socketio.init_app(app, cors_allowed_origins="*")
 dotenv_path = join(dirname(__file__), 'project2.env')
 load_dotenv(dotenv_path)
 
-#sql_user = os.environ['SQL_USER']
-#sql_pwd = os.environ['SQL_PASSWORD']
-dbuser = os.environ['USER']
-
-database_uri = os.environ['DATABASE_URL'] #'postgresql://{}:{}@localhost/postgres'.format(sql_user, sql_pwd)
+database_uri = os.environ['DATABASE_URL']
 
 app.config['SQLALCHEMY_DATABASE_URI'] = database_uri
 
