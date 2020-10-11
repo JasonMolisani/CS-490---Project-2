@@ -36,8 +36,8 @@ db.session.commit()
 
 def emit_chat_history(channel):
     chat_history = [ \
-        db_item.item for db_item \
-        in db.session.query(models.Groceries).all()]
+        (db_message.sender + ": " + db_message.message) for db_message \
+        in db.session.query(models.ChatHistory_DB).all()]
     chat_history.reverse() # Want newest message first
         
     socketio.emit(channel, {
@@ -63,7 +63,7 @@ def on_disconnect():
 def on_new_message(data):
     print("Got an event for adding this message to the chat history:\n\t{}: {}".format(data["sender"], data["msg"]))
 
-    db.session.add(models.Groceries("{}: {}".format(data["sender"], data["msg"])));
+    db.session.add(models.ChatHistory_DB(data["sender"], data["msg"]));
     db.session.commit();
     
     emit_chat_history(CHAT_HISTORY_BROADCAST_CHANNEL)
