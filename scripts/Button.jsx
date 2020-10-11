@@ -16,6 +16,19 @@ function handleSubmit(event) {
 }
 
 export function Button() {
+    
+    function setup() {
+        React.useEffect(() => {
+            Socket.on('connected', (data) => {
+                console.log("Initialized username to : " + data['defaultUsername']);
+                let sender = document.getElementById("sender_input");
+                sender.value = data['defaultUsername']
+            })
+        });
+    }
+
+    setup()
+    
     return (
         <form onSubmit={handleSubmit}>
             <input id="sender_input" placeholder="Enter username here"></input>

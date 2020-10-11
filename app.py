@@ -34,6 +34,8 @@ db.app = app
 db.create_all()
 db.session.commit()
 
+anonNum = 0
+
 def emit_chat_history(channel):
     chat_history = [ \
         (db_message.sender + ": " + db_message.message) for db_message \
@@ -48,10 +50,13 @@ def emit_chat_history(channel):
 @socketio.on('connect')
 def on_connect():
     print('Someone connected!')
+    global anonNum
+    defaultuser = 'Anonymous{}'.format(anonNum)
     socketio.emit('connected', {
-        'test': 'Connected'
+        'defaultUsername': defaultuser
     })
-    
+    anonNum += 1
+    print("Assigned new user this username: {}".format(defaultuser))
     emit_chat_history(CHAT_HISTORY_BROADCAST_CHANNEL)
     
 
@@ -71,6 +76,7 @@ def on_new_message(data):
 @app.route('/')
 def index():
     models.db.create_all()
+    anonNum = 0
     emit_chat_history(CHAT_HISTORY_BROADCAST_CHANNEL)
 
     return flask.render_template("index.html")
