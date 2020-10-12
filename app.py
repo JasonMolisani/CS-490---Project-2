@@ -9,6 +9,8 @@ import models
 import bot
 
 CHAT_HISTORY_BROADCAST_CHANNEL = 'Chat history received'
+MAX_MESSAGE_LENGTH = 120
+MESSAGE_LENGTH_ERROR_MESSAGE = "Incoming message was too long and wasn't saved. Please limit messages to {} characters".format(MAX_MESSAGE_LENGTH)
 
 app = flask.Flask(__name__)
 
@@ -67,7 +69,10 @@ def on_disconnect():
 def on_new_message(data):
     print("Got an event for adding this message to the chat history:\n\t{}: {}".format(data["sender"], data["msg"]))
 
-    db.session.add(models.ChatHistory_DB(data["sender"], data["msg"]));
+    if len(data["msg"]) > MAX_MESSAGE_LENGTH:
+        db.session.add(models.ChatHistory_DB(chatBot.name, MESSAGE_LENGTH_ERROR_MESSAGE));
+    else:
+        db.session.add(models.ChatHistory_DB(data["sender"], data["msg"]));
     db.session.commit();
     
     emit_chat_history(CHAT_HISTORY_BROADCAST_CHANNEL)

@@ -39,7 +39,8 @@
 1. When deplying to Heroku, I had a hard time using `SELECT * FROM [my_database]` to test that my databse had been pushed up correctly. I searched the local database to see that `flask_sqlalchemy` had converted my chosen class name (`ChatHistory_DB`) to `chat_history_DB`, but when I ran `SELECT * FROM chat_history_DB` I kept getting an error about there not being a database with that name. The `usps` database that still existed from the lectures had been pushed up, but my new database wasn't resonding to the select query. Wondering if it was something in the table name, I did an internet search about table naming conventions that led me [here](https://stackoverflow.com/questions/2878248/postgresql-naming-conventions). There was a bunch of useful info, but the key part was "Postgresql treats identifiers case insensitively when not quoted (it actually folds them to lowercase internally), and case sensitively when quoted." This means my query of `SELECT * FROM chat_history_DB` was being treated the same as `SELECT * FROM chat_history_db`. In order to preserve the capitolization, I needed to rephrase the query as `SELECT * FROM "chat_history_DB"` (which worked).
 2. After deplying to Heroku, I still couldn't get my program to run after fixing the environmental variables. Looking at the heroku logs, I was able to see that I still had the `import editdistance` line from where I used it in hw10 (which I repurposed for the project instead of building from scratch). HW10 was built off the completed lecture 11 example, which already had a requirements.txt file. This requirements.txt file didn't have a line for the edit distace module I started importing later, so when heroku tried to build it failed.
 3. When I first started to program the chat bot, I was trying to figure out how to get it to have its own socket to reply on. I spent more time trying to figure this out than I would like to admit, but I eventually realized the very simple solution. The chat bot didn't need to broadcast anything. It just needed to reply to any message the server flagged as a potential command and passed into the bot. It just needed to take in a string and return a string. The server could then add its response to the message history and rebroadcast that with no issues, since that is what it was doing with all other messages anyway. That was much simpler and easier to implement.
-4. 
+4. When making the help command for the chat bot, I made a rather long string. This was the first time I had sent a long message through the chat app and when I prompted the chat bot to see that response, I didn't see anything. The bot still responded to the rest of my messages, but not this. Looking at the server logs, I was able to see that the problem occurred when I tried to save that message in the chat history database. When I made the database, I didn't put too much thought into it and left only 120 characters as the maximum amount i could store for a single message. Having identified the problem, there were two solutions: Redo the database to allow for the longer message, or make sure chat bot will never send a message that is too long and add a check in the server to handle user submitted messages that are too long. Redoing the database only temporarily solves the problem as the limit will still exist, just at a higher level. I implemented the second solution, but did add the database resize as a possible improvement for the future.
+5. 
 
 ## TODOs and Improvements
 1. Add a background image to the chat room
@@ -54,18 +55,20 @@
    - Identifiable visually
      - **Unresolved** - unattempted
    - `!!about` make chat bot give a self description
-     - **Unresolved** - unattempted
+     - **Resolved** - Chat bot has a self introduction. This could be improved in the future, but will work for now.
    - `!!help` chat bot sends a message with all of its commands
-     - **Unresolved** - unattempted
+     - **Resolved** - Will need to update help in the future to provide help messages for new commands
    - `!!funtranslate [message]` makes bot echo message translated into choice of [fun language](https://funtranslations.com/api)
      - **Unresolved** - unattempted
    - 1 command that uses some API
      - **Unresolved** - unattempted
    - 1 command that doesn't have to use an API
-     - **Unresolved** - unattempted
+     - **Partially Resolved** - Added an !!echo command, but that is really a simplified !!funtranslate. I may want to add another more interesting command later.
 5. Clients update count on connect/disconnect
    - **Unresolved** - unattempted
 6. Clean up dead and commented out code
    - **Unresolved** - unattempted
 7. HTML/CSS improvements
+   - **Unresolved** - unattempted
+8. Rework Database to imcrease max message length from 120 characters
    - **Unresolved** - unattempted
