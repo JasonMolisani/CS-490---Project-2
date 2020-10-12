@@ -56,6 +56,10 @@ class Bot:
         if len(cmdArgs) >= 2:
             trnsMsg += cmdArgs[1]
         # TODO implement use of funtranslate API
+        parameters = {"text": trnsMsg}
+        response = requests.get("https://api.funtranslations.com/translate/pirate.json", params=parameters)
+        if response.status_code == 200:
+            trnsMsg = response.json()["contents"]["translated"]
         if len(trnsMsg) > MAX_MESSAGE_LENGTH:
             trnsMsg = trnsMsg[:MAX_MESSAGE_LENGTH]
         return {'msg': trnsMsg, 'sender': self.name}

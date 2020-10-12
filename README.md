@@ -59,7 +59,7 @@
    - `!!help` chat bot sends a message with all of its commands
      - **Resolved** - Will need to update help in the future to provide help messages for new commands
    - `!!funtranslate [message]` makes bot echo message translated into choice of [fun language](https://funtranslations.com/api)
-     - **Unresolved** - unattempted
+     - **Resolved** - funtranslate will now translate into pirate (up the the maximum number of free API calls, which is 5/hour and 60/day)
    - 1 command that uses some API
      - **Resolved** - Dadbot now uses the icanhazdadjoke API to tell dad jokes.
    - 1 command that doesn't have to use an API
