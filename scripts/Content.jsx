@@ -7,6 +7,7 @@ import { Socket } from './Socket';
 
 export function Content() {
     const [messages, setMessages] = React.useState([]);
+    const [numUsers, setNumUsers] = React.useState([]);
     
     function getMessages() {
         React.useEffect(() => {
@@ -17,7 +18,23 @@ export function Content() {
         });
     }
     
+    function updateNumUsers() {
+        React.useEffect(() => {
+            Socket.on('someone connected', (data) => {
+                setNumUsers(data['numUsers']);
+            })
+        });
+        
+        
+        React.useEffect(() => {
+            Socket.on('someone disconnected', (data) => {
+                setNumUsers(data['numUsers']);
+            })
+        });
+    }
+    
     getMessages();
+    updateNumUsers();
 
     return (
         <div>
@@ -29,6 +46,9 @@ export function Content() {
                     {messages.map((message, index) =>
                         <li key={index}>{message}</li>)}
                 </ul>
+            </div>
+            <div id="chatRoomStats">
+                <p>Number of users in chat room: {numUsers}</p>
             </div>
         </div>
     );

@@ -33,6 +33,7 @@ db.create_all()
 db.session.commit()
 
 anonNum = 0
+numUsers = 0
 
 chatBot = bot.Bot()
 
@@ -51,19 +52,36 @@ def emit_chat_history(channel):
 @socketio.on('connect')
 def on_connect():
     print('Someone connected!')
+    
+    # Generate a default username for the new connection
     global anonNum
     defaultuser = 'Anonymous{}'.format(anonNum)
-    socketio.emit('connected', {
-        'defaultUsername': defaultuser
-    })
     anonNum += 1
     print("Assigned new user this username: {}".format(defaultuser))
+    
+    # Update the number of users currently connected
+    global numUsers
+    numUsers += 1
+    
+    # Transmit the default username, number of users, and chat history
+    socketio.emit('someone connected', {
+        'defaultUsername': defaultuser,
+        'numUsers': numUsers
+    })
     emit_chat_history(CHAT_HISTORY_BROADCAST_CHANNEL)
     
 
 @socketio.on('disconnect')
 def on_disconnect():
-    print ('Someone disconnected!')
+    print ('someone disconnected!')
+    
+    # Update the number of users currently connected and broadcast that change
+    global numUsers
+    numUsers -= 1
+    socketio.emit('someone disconnected', {
+        'numUsers': numUsers
+    })
+    
 
 @socketio.on('new message')
 def on_new_message(data):

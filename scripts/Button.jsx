@@ -19,10 +19,12 @@ export function Button() {
     
     function setup() {
         React.useEffect(() => {
-            Socket.on('connected', (data) => {
-                console.log("Initialized username to : " + data['defaultUsername']);
+            Socket.on('someone connected', (data) => {
                 let sender = document.getElementById("sender_input");
-                sender.value = data['defaultUsername']
+                if (sender.value == "") {
+                    console.log("Initialized username to : " + data['defaultUsername']);
+                    sender.value = data['defaultUsername']
+                }
             })
         });
     }

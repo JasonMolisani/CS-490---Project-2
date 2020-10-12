@@ -16,6 +16,14 @@ body {
   padding: 0;
 }
 
+#chatRoomStats {
+  margin: auto;
+  width: 66%;
+  border: 3px solid green;
+  padding: 0;
+  text-align: right;
+}
+
 li {
     list-style: none;
     border: 1px solid;
@@ -41,4 +49,8 @@ form {
 
 #message_input {
     width: 50%;
+}
+
+#chatRoomStats p {
+    margin: 10px 10px 0px 0px;
 }
