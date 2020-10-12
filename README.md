@@ -48,7 +48,7 @@
 2. Make number of connected users always visible
    - **Resolved** - Added a new react component to the page that takes in the number of users and updates it with hooks triggered on emits that will have a new value
 3. Make sure page doesn't scroll
-   - **Unresolved** - unattempted
+   - **Resolved** - Fixed the number of displayed messages to not exceed a certain amount (currently set at 24)
 4. Chatbot
    - Uses its own class
      - **Resolved** - Chat bot is a class that is the server can ask for responses. Addtional functions still need to be added to customize chat bot's responses, but the querying of chat bot and broadcasting its' replies is finished

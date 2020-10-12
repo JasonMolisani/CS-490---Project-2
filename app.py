@@ -11,6 +11,7 @@ import bot
 CHAT_HISTORY_BROADCAST_CHANNEL = 'Chat history received'
 MAX_MESSAGE_LENGTH = 120
 MESSAGE_LENGTH_ERROR_MESSAGE = "Incoming message was too long and wasn't saved. Please limit messages to {} characters".format(MAX_MESSAGE_LENGTH)
+MAX_DISPLAYED_MESSAGES = 24
 
 app = flask.Flask(__name__)
 
@@ -45,7 +46,7 @@ def emit_chat_history(channel):
     chat_history.reverse() # Want newest message first
         
     socketio.emit(channel, {
-        'chatHistory': chat_history
+        'chatHistory': chat_history[:min(len(chat_history), MAX_DISPLAYED_MESSAGES)]
     })
 
 
