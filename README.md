@@ -61,7 +61,7 @@
    - `!!funtranslate [message]` makes bot echo message translated into choice of [fun language](https://funtranslations.com/api)
      - **Unresolved** - unattempted
    - 1 command that uses some API
-     - **Unresolved** - unattempted
+     - **Resolved** - Dadbot now uses the icanhazdadjoke API to tell dad jokes.
    - 1 command that doesn't have to use an API
      - **Partially Resolved** - Added an !!echo command, but that is really a simplified !!funtranslate. I may want to add another more interesting command later.
 5. Clients update count on connect/disconnect
