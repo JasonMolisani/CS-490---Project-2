@@ -6,6 +6,7 @@ import flask
 import flask_sqlalchemy
 import flask_socketio
 import models
+import bot
 
 CHAT_HISTORY_BROADCAST_CHANNEL = 'Chat history received'
 
@@ -30,6 +31,9 @@ db.create_all()
 db.session.commit()
 
 anonNum = 0
+
+chatBot = bot.Bot()
+
 
 def emit_chat_history(channel):
     chat_history = [ \
@@ -67,13 +71,21 @@ def on_new_message(data):
     db.session.commit();
     
     emit_chat_history(CHAT_HISTORY_BROADCAST_CHANNEL)
+    
+    if len(data['msg']) >= 2 and data['msg'][0:2]=="!!":
+        botReply = chatBot.parseCommand(data['msg'][2:])
+        
+        db.session.add(models.ChatHistory_DB(botReply["sender"], botReply["msg"]));
+        db.session.commit();
+        
+        emit_chat_history(CHAT_HISTORY_BROADCAST_CHANNEL)
 
 @app.route('/')
 def index():
     models.db.create_all()
     anonNum = 0
     emit_chat_history(CHAT_HISTORY_BROADCAST_CHANNEL)
-
+    
     return flask.render_template("index.html")
 
 if __name__ == '__main__': 
