@@ -1,5 +1,6 @@
 body {
-    background-color: #FFFFFF;
+    background-image: linear-gradient(to bottom right, #000000, #777777);
+    background-color: #000000;
 }
 
 #messageSubmission {
@@ -12,8 +13,14 @@ body {
 #messageHistory {
   margin: auto;
   width: 66%;
-  border: 3px solid green;
+  border: 3px solid #4700B3;
   padding: 0;
+  background-image: url("/static/origami_dragon.jpg");
+  background-color: #AAAAAA;
+  background-position: top-center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  color: #6600FF;
 }
 
 #chatRoomStats {
@@ -26,7 +33,16 @@ body {
 
 li {
     list-style: none;
-    border: 1px solid;
+    border: 1px dotted #000000;
+}
+
+.bot {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.user {
+    opacity: 1.0;
+    background: transparent;
 }
 
 ul {

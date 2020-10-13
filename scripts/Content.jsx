@@ -44,7 +44,7 @@ export function Content() {
             <div id="messageHistory">
                 <ul>
                     {messages.map((message, index) =>
-                        <li key={index}>{message}</li>)}
+                        <li key={index} class={message['class']}>{message['sender']}: {message['message']}</li>)}
                 </ul>
             </div>
             <div id="chatRoomStats">

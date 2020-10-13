@@ -44,7 +44,7 @@
 
 ## TODOs and Improvements
 1. Add a background image to the chat room
-   - **Unresolved** - unattempted
+   - **Resolved** - Added my dragon origami picture as a backgound to the chat history div and added to diagonal gradient to the main body to "match" 
 2. Make number of connected users always visible
    - **Resolved** - Added a new react component to the page that takes in the number of users and updates it with hooks triggered on emits that will have a new value
 3. Make sure page doesn't scroll
@@ -53,7 +53,7 @@
    - Uses its own class
      - **Resolved** - Chat bot is a class that is the server can ask for responses. Addtional functions still need to be added to customize chat bot's responses, but the querying of chat bot and broadcasting its' replies is finished
    - Identifiable visually
-     - **Unresolved** - unattempted
+     - **Partially Resolved** - Added a class to each 'li'  element of chat history to differentiate formatting between 'user' and 'bot' messages. Currently, the class is being derived from the sender's username. When I am eventually forced to redo the database format, this class will be stored and retrueved directly from the database.
    - `!!about` make chat bot give a self description
      - **Resolved** - Chat bot has a self introduction. This could be improved in the future, but will work for now.
    - `!!help` chat bot sends a message with all of its commands
