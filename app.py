@@ -11,7 +11,7 @@ import bot
 CHAT_HISTORY_BROADCAST_CHANNEL = 'Chat history received'
 MAX_MESSAGE_LENGTH = 120
 MESSAGE_LENGTH_ERROR_MESSAGE = "Incoming message was too long and wasn't saved. Please limit messages to {} characters".format(MAX_MESSAGE_LENGTH)
-MAX_DISPLAYED_MESSAGES = 24
+MAX_DISPLAYED_MESSAGES = 32
 BOT_NAME = 'DadBot'
 
 app = flask.Flask(__name__)
@@ -40,8 +40,9 @@ numUsers = 0
 chatBot = bot.Bot(name=BOT_NAME)
 
 def emit_chat_history(channel):
+    # The list conprehension will be used once the database gets redesigned, but until then the patchy for loop will do
     # chat_history = [ \
-    #     {'sender': db_message.sender, 'message': db_message.message, 'class': 'user'} for db_message \
+    #     {'sender': db_message.sender, 'message': db_message.message, 'class': db_message.class} for db_message \
     #     in db.session.query(models.ChatHistory_DB).all()]
     chat_history = []
     for db_message in db.session.query(models.ChatHistory_DB).all():
@@ -49,11 +50,9 @@ def emit_chat_history(channel):
             chat_history.append({'sender': db_message.sender, 'message': db_message.message, 'class': 'bot'})
         else:
             chat_history.append({'sender': db_message.sender, 'message': db_message.message, 'class': 'user'})
-            
-    chat_history.reverse() # Want newest message first
         
     socketio.emit(channel, {
-        'chatHistory': chat_history[:min(len(chat_history), MAX_DISPLAYED_MESSAGES)]
+        'chatHistory': chat_history[-min(len(chat_history), MAX_DISPLAYED_MESSAGES):]
     })
 
 

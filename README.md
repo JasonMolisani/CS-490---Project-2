@@ -4,6 +4,8 @@
 
 ## DEPLOYMENT
 
+If you just wish to run the application, it is already deployed on [heroku](https://obscure-badlands-93399.herokuapp.com/). If you want to deploy it yourself, follow these instructions.
+
 ### Prep-work to get this running locally (only do once)
 1. Clone this repository: `git clone https://github.com/NJIT-CS490/project2-m1-jm979.git` (all `commands` are to be executed in the terminal)
 2. Use the reactSetup.sh to set up the react software: `sh reactSetup.sh`
@@ -67,10 +69,10 @@
 5. Clients update count on connect/disconnect
    - **Resolved** - Added a new react component to the page that takes in the number of users and updates it with hooks triggered on emits that will have a new value
 6. Clean up dead and commented out code
-   - **Unresolved** - unattempted
+   - **Partially Resolved** - Most commented out code has been removed, but I did leave the list comprehension that will be utilized again after the database is reworked.
 7. HTML/CSS improvements
-   - **Partially resolved** - Basic formatting is done, but there is a lot of room for improvement
-8. Rework Database to imcrease max message length from 120 characters (not required for milestone)
+   - **Resolved** - Basic formatting is done, but there is a lot of room for improvement. EDIT: acceptable levels of styling have been achieved
+8. Rework Database to increase max message length from 120 characters, decrease username max length from 120 characters, and add a class attribute that will be either 'user' or 'bot' (not required for milestone)
    - **Unresolved** - unattempted
 9. My patch of default usernames could assign to users the same username if an already connected user manually deletes their assigned username and someone new connects while that field is blank
    - **Unresolved** - I suspect later milestones will have a more rigorous login system implemented and this problem will be removed and overwritten, but I am noting it here just in case it doesn't.

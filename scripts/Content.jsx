@@ -38,8 +38,8 @@ export function Content() {
 
     return (
         <div>
-            <div id="messageSubmission">
-                <Button />
+            <div id="chatRoomStats">
+                <p>Number of users in chat room: {numUsers}</p>
             </div>
             <div id="messageHistory">
                 <ul>
@@ -47,8 +47,8 @@ export function Content() {
                         <li key={index} class={message['class']}>{message['sender']}: {message['message']}</li>)}
                 </ul>
             </div>
-            <div id="chatRoomStats">
-                <p>Number of users in chat room: {numUsers}</p>
+            <div id="messageSubmission">
+                <Button />
             </div>
         </div>
     );
