@@ -42,7 +42,7 @@ chatBot = bot.Bot(name=BOT_NAME)
 def emit_chat_history(channel):
     # The list conprehension will be used once the database gets redesigned, but until then the patchy for loop will do
     chat_history = [ \
-        {'sender': db_message.senderDBkey, 'message': db_message.message, 'class': db_message.senderClass} for db_message \
+        {'senderPic': db_message.sender.picUrl, 'message': db_message.message, 'class': db_message.senderClass} for db_message \
         in db.session.query(models.chatHistory).all()]
         
     socketio.emit(channel, {
@@ -88,7 +88,11 @@ def on_disconnect():
 def on_new_message(data):
     print("Got an event for adding this message to the chat history:\n\t{}: {}".format(data["sender"], data["msg"]))
 
-    if len(data["msg"]) > MAX_MESSAGE_LENGTH:
+    if len(models.registeredUsers.query.filterby(id=data["sender"]).all):
+        # If the sender id is not in the database, don't add the message
+        print("Message not added due to invalid sender ID")
+        return
+    elif len(data["msg"]) > MAX_MESSAGE_LENGTH:
         db.session.add(models.chatHistory(chatBot.name, MESSAGE_LENGTH_ERROR_MESSAGE, "bot"));
     else:
         db.session.add(models.chatHistory(data["sender"], data["msg"], "user"));
