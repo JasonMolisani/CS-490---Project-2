@@ -9,7 +9,7 @@ import models
 import bot
 
 CHAT_HISTORY_BROADCAST_CHANNEL = 'Chat history received'
-MAX_MESSAGE_LENGTH = 120
+MAX_MESSAGE_LENGTH = 480
 MESSAGE_LENGTH_ERROR_MESSAGE = "Incoming message was too long and wasn't saved. Please limit messages to {} characters".format(MAX_MESSAGE_LENGTH)
 MAX_DISPLAYED_MESSAGES = 32
 BOT_NAME = 'DadBot'
@@ -41,15 +41,9 @@ chatBot = bot.Bot(name=BOT_NAME)
 
 def emit_chat_history(channel):
     # The list conprehension will be used once the database gets redesigned, but until then the patchy for loop will do
-    # chat_history = [ \
-    #     {'sender': db_message.sender, 'message': db_message.message, 'class': db_message.class} for db_message \
-    #     in db.session.query(models.ChatHistory_DB).all()]
-    chat_history = []
-    for db_message in db.session.query(models.ChatHistory_DB).all():
-        if db_message.sender == BOT_NAME:
-            chat_history.append({'sender': db_message.sender, 'message': db_message.message, 'class': 'bot'})
-        else:
-            chat_history.append({'sender': db_message.sender, 'message': db_message.message, 'class': 'user'})
+    chat_history = [ \
+        {'sender': db_message.senderDBkey, 'message': db_message.message, 'class': db_message.senderClass} for db_message \
+        in db.session.query(models.chatHistory).all()]
         
     socketio.emit(channel, {
         'chatHistory': chat_history[-min(len(chat_history), MAX_DISPLAYED_MESSAGES):]
@@ -95,9 +89,9 @@ def on_new_message(data):
     print("Got an event for adding this message to the chat history:\n\t{}: {}".format(data["sender"], data["msg"]))
 
     if len(data["msg"]) > MAX_MESSAGE_LENGTH:
-        db.session.add(models.ChatHistory_DB(chatBot.name, MESSAGE_LENGTH_ERROR_MESSAGE));
+        db.session.add(models.chatHistory(chatBot.name, MESSAGE_LENGTH_ERROR_MESSAGE, "bot"));
     else:
-        db.session.add(models.ChatHistory_DB(data["sender"], data["msg"]));
+        db.session.add(models.chatHistory(data["sender"], data["msg"], "user"));
     db.session.commit();
     
     emit_chat_history(CHAT_HISTORY_BROADCAST_CHANNEL)
@@ -105,7 +99,7 @@ def on_new_message(data):
     if len(data['msg']) >= 2 and data['msg'][0:2]=="!!":
         botReply = chatBot.parseCommand(data['msg'][2:])
         
-        db.session.add(models.ChatHistory_DB(botReply["sender"], botReply["msg"]));
+        db.session.add(models.chatHistory(botReply["sender"], botReply["msg"], "bot"));
         db.session.commit();
         
         emit_chat_history(CHAT_HISTORY_BROADCAST_CHANNEL)
