@@ -55,22 +55,13 @@ def emit_chat_history(channel):
 def on_connect():
     print('Someone connected!')
     
-    # Generate a default username for the new connection
-    global anonNum
-    defaultuser = 'Anonymous{}'.format(anonNum)
-    anonNum += 1
-    print("Assigned new user this username: {}".format(defaultuser))
-    
     # Update the number of users currently connected
     global numUsers
-    numUsers += 1
     
     # Transmit the default username, number of users, and chat history
     socketio.emit('someone connected', {
-        'defaultUsername': defaultuser,
         'numUsers': numUsers
     })
-    emit_chat_history(CHAT_HISTORY_BROADCAST_CHANNEL)
     
 
 @socketio.on('disconnect')
@@ -105,6 +96,15 @@ def accept_login(data):
         'picUrl': profilePic,
         'senderKey': senderDBkey,
     }, room=request.sid)
+    
+    global numUsers
+    numUsers += 1
+    
+    socketio.emit('someone logged in', {
+        'numUsers': numUsers
+    })
+    
+    emit_chat_history(CHAT_HISTORY_BROADCAST_CHANNEL)
 
 @socketio.on('new message')
 def on_new_message(data):

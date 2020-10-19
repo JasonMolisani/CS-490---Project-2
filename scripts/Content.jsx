@@ -21,6 +21,13 @@ export function Content() {
                 setNumUsers(data['numUsers']);
             })
         });
+        
+        
+        React.useEffect(() => {
+            Socket.on('someone logged in', (data) => {
+                setNumUsers(data['numUsers']);
+            })
+        });
     }
     updateNumUsers();
 

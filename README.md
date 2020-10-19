@@ -42,7 +42,8 @@ If you just wish to run the application, it is already deployed on [heroku](http
 2. After deplying to Heroku, I still couldn't get my program to run after fixing the environmental variables. Looking at the heroku logs, I was able to see that I still had the `import editdistance` line from where I used it in hw10 (which I repurposed for the project instead of building from scratch). HW10 was built off the completed lecture 11 example, which already had a requirements.txt file. This requirements.txt file didn't have a line for the edit distace module I started importing later, so when heroku tried to build it failed.
 3. When I first started to program the chat bot, I was trying to figure out how to get it to have its own socket to reply on. I spent more time trying to figure this out than I would like to admit, but I eventually realized the very simple solution. The chat bot didn't need to broadcast anything. It just needed to reply to any message the server flagged as a potential command and passed into the bot. It just needed to take in a string and return a string. The server could then add its response to the message history and rebroadcast that with no issues, since that is what it was doing with all other messages anyway. That was much simpler and easier to implement.
 4. When making the help command for the chat bot, I made a rather long string. This was the first time I had sent a long message through the chat app and when I prompted the chat bot to see that response, I didn't see anything. The bot still responded to the rest of my messages, but not this. Looking at the server logs, I was able to see that the problem occurred when I tried to save that message in the chat history database. When I made the database, I didn't put too much thought into it and left only 120 characters as the maximum amount i could store for a single message. Having identified the problem, there were two solutions: Redo the database to allow for the longer message, or make sure chat bot will never send a message that is too long and add a check in the server to handle user submitted messages that are too long. Redoing the database only temporarily solves the problem as the limit will still exist, just at a higher level. I implemented the second solution, but did add the database resize as a possible improvement for the future.
-5. 
+5. When starting milestone 2, I needed to set up the server to only respond to the specific user who was had just logged in. For milestone 1 I got by with broadcasting everything and having the clients and server pick put the messages that were relevant to them. This left a loophole that could have multiple users be assigned the same default username. This wasn't a big problem since no security regarding the usernames had been implemented anyway. With the implementation of OAurh, this was no longer accdeptable. Searching around on stack overflow eventually revealed that I could use the default room given by `request.sid` to communicate with the single client who had sent the message the server was replying to. Unfortunately, it took me longer than I would like to admit to understand that I needed to explicitly import request from the flask library. I couldn't just refer to request by importing flask (though there may be a way using `flask.request.sid` or something like that).
+6. With the idea of a logged in and not logged in state, came the need to render components in different ways to reflect that change. Googling `react conditional html` brought me to a [webpage](https://reactjs.org/docs/conditional-rendering.html) with a number of different ways to do this. I decided to use the if version, though the example used a prop instead of a state. Using a react state worked just as well.
 
 ## TODOs and Improvements
 1. Add a background image to the chat room
@@ -55,7 +56,7 @@ If you just wish to run the application, it is already deployed on [heroku](http
    - Uses its own class
      - **Resolved** - Chat bot is a class that is the server can ask for responses. Addtional functions still need to be added to customize chat bot's responses, but the querying of chat bot and broadcasting its' replies is finished
    - Identifiable visually
-     - **Partially Resolved** - Added a class to each 'li'  element of chat history to differentiate formatting between 'user' and 'bot' messages. Currently, the class is being derived from the sender's username. When I am eventually forced to redo the database format, this class will be stored and retrueved directly from the database.
+     - **Resolved** - Added a class to each 'li'  element of chat history to differentiate formatting between 'user' and 'bot' messages.
    - `!!about` make chat bot give a self description
      - **Resolved** - Chat bot has a self introduction. This could be improved in the future, but will work for now.
    - `!!help` chat bot sends a message with all of its commands
@@ -67,12 +68,14 @@ If you just wish to run the application, it is already deployed on [heroku](http
    - 1 command that doesn't have to use an API
      - **Partially Resolved** - Added an !!echo command, but that is really a simplified !!funtranslate. I may want to add another more interesting command later.
 5. Clients update count on connect/disconnect
-   - **Resolved** - Added a new react component to the page that takes in the number of users and updates it with hooks triggered on emits that will have a new value
+   - **Resolved** - Added a new react component to the page that takes in the number of users and updates it with hooks triggered on emits that will have a new value.
 6. Clean up dead and commented out code
-   - **Partially Resolved** - Most commented out code has been removed, but I did leave the list comprehension that will be utilized again after the database is reworked.
+   - **Resolved** - Commented out code has been removed.
 7. HTML/CSS improvements
    - **Resolved** - Basic formatting is done, but there is a lot of room for improvement. EDIT: acceptable levels of styling have been achieved
 8. Rework Database to increase max message length from 120 characters, decrease username max length from 120 characters, and add a class attribute that will be either 'user' or 'bot' (not required for milestone)
-   - **Unresolved** - unattempted
+   - **Resolved** - Database was entirely reworked to tie message sender to a foreign key in the new database of registered users
 9. My patch of default usernames could assign to users the same username if an already connected user manually deletes their assigned username and someone new connects while that field is blank
-   - **Unresolved** - I suspect later milestones will have a more rigorous login system implemented and this problem will be removed and overwritten, but I am noting it here just in case it doesn't.
+   - **Resolved** - Setting up google authentication has wound up solving this issue
+10. Currently, the server always emits the chat history to all clients. The client code is the only thing preventing the viewing of the chat history. I should create a room of logged in users and only let the server transmit to the logged in users.
+    - **Unresolved** - not attempted yet
