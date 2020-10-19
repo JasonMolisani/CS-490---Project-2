@@ -7,6 +7,7 @@ import flask_sqlalchemy
 import flask_socketio
 import models
 import bot
+from flask import request
 
 CHAT_HISTORY_BROADCAST_CHANNEL = 'Chat history received'
 MAX_MESSAGE_LENGTH = 480
@@ -83,12 +84,33 @@ def on_disconnect():
         'numUsers': numUsers
     })
     
+@socketio.on('new user login')
+def accept_login(data):
+    email = data["email"]
+    profilePic = data["picUrl"]
+    print("received login request for email: {}".format(email))
+    
+    # If this is a new user, add it to the database
+    if len(models.registeredUsers.query.filter_by(email=email, picUrl=profilePic).all()) == 0:
+        db.session.add(models.registeredUsers(email, profilePic))
+        db.session.commit()
+        print("New user registered to the database")
+    else:
+        print("User was already registered")
+    
+    senderDBkey = models.registeredUsers.query.filter_by(email=email, picUrl=profilePic).first().id
+    
+    socketio.emit('login accepted', {
+        'email': email,
+        'picUrl': profilePic,
+        'senderKey': senderDBkey,
+    }, room=request.sid)
 
 @socketio.on('new message')
 def on_new_message(data):
     print("Got an event for adding this message to the chat history:\n\t{}: {}".format(data["sender"], data["msg"]))
 
-    if len(models.registeredUsers.query.filterby(id=data["sender"]).all):
+    if len(models.registeredUsers.query.filter_by(id=data["sender"]).all()) == 0:
         # If the sender id is not in the database, don't add the message
         print("Message not added due to invalid sender ID")
         return

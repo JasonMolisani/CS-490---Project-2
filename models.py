@@ -15,7 +15,7 @@ class registeredUsers(db.Model):
 
 class chatHistory(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    senderDBkey = db.Column(db.Integer, db.foreignKey(registeredUsers.id), nullable=False)
+    senderDBkey = db.Column(db.Integer, db.ForeignKey(registeredUsers.id), nullable=False)
     message = db.Column(db.String(480))
     senderClass = db.Column(db.String(16))
     

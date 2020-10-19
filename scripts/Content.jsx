@@ -47,9 +47,7 @@ export function Content() {
                         <li key={index} class={message['class']}>{message['sender']}: {message['message']}</li>)}
                 </ul>
             </div>
-            <div id="messageSubmission">
-                <Button />
-            </div>
+            <Button />
         </div>
     );
 }
