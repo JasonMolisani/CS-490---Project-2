@@ -4,8 +4,8 @@ import requests
 MAX_MESSAGE_LENGTH = 120
 
 class Bot:
-    def __init__(self, name="DadBot"):
-        self.name = name
+    def __init__(self, DB_Id=0):
+        self.DB_Id = DB_Id
     
     def parseCommand(self, message):
         commandArgs = message.split(maxsplit=1)
@@ -39,17 +39,17 @@ class Bot:
                 return self.help([cmdArgs[0]])
         else:
             hlpMsg = "!!help [command] - please specify the command you would like to know about (about, echo, funtranslate, or joke)"
-        return {'msg': hlpMsg, 'sender': self.name}
+        return {'msg': hlpMsg, 'sender': self.DB_Id}
     
     def about(self):
         abtMsg = "I am your friendly neighborhood DadBot, here to help. To see a list of my commands, type '!!help'"
-        return {'msg': abtMsg, 'sender': self.name}
+        return {'msg': abtMsg, 'sender': self.DB_Id}
     
     def echo(self, cmdArgs):
         echoMsg = ""
         if len(cmdArgs) >= 2:
             echoMsg += cmdArgs[1]
-        return {'msg': echoMsg, 'sender': self.name}
+        return {'msg': echoMsg, 'sender': self.DB_Id}
     
     def funtranslate(self, cmdArgs):
         trnsMsg = ""
@@ -62,7 +62,7 @@ class Bot:
             trnsMsg = response.json()["contents"]["translated"]
         if len(trnsMsg) > MAX_MESSAGE_LENGTH:
             trnsMsg = trnsMsg[:MAX_MESSAGE_LENGTH]
-        return {'msg': trnsMsg, 'sender': self.name}
+        return {'msg': trnsMsg, 'sender': self.DB_Id}
     
     def joke(self):
         # Uses the icanhazdadjoke API to get a dad joke
@@ -80,9 +80,9 @@ class Bot:
             jkMsg = response.json()['joke']
         else:
             jkMsg = "Sorry, I can't seem to think of a good joke right now"
-        return {'msg': jkMsg, 'sender': self.name}
+        return {'msg': jkMsg, 'sender': self.DB_Id}
     
     def error(self, badCommand):
         errMsg = "Sorry, '{}' is not a recognized command.".format(badCommand)
         errMsg += " To see a list of known commands, use '!!help'"
-        return {'msg': errMsg, 'sender': self.name}
+        return {'msg': errMsg, 'sender': self.DB_Id}

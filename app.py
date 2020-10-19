@@ -13,7 +13,8 @@ CHAT_HISTORY_BROADCAST_CHANNEL = 'Chat history received'
 MAX_MESSAGE_LENGTH = 480
 MESSAGE_LENGTH_ERROR_MESSAGE = "Incoming message was too long and wasn't saved. Please limit messages to {} characters".format(MAX_MESSAGE_LENGTH)
 MAX_DISPLAYED_MESSAGES = 32
-BOT_NAME = 'DadBot'
+BOT_EMAIL = 'DadBot@fakeEmail.com'
+BOT_PIC = '/static/origami_dragon.jpg'
 
 app = flask.Flask(__name__)
 
@@ -38,7 +39,7 @@ db.session.commit()
 anonNum = 0
 numUsers = 0
 
-chatBot = bot.Bot(name=BOT_NAME)
+chatBot = bot.Bot()
 
 def emit_chat_history(channel):
     # The list conprehension will be used once the database gets redesigned, but until then the patchy for loop will do
@@ -115,7 +116,7 @@ def on_new_message(data):
         print("Message not added due to invalid sender ID")
         return
     elif len(data["msg"]) > MAX_MESSAGE_LENGTH:
-        db.session.add(models.chatHistory(chatBot.name, MESSAGE_LENGTH_ERROR_MESSAGE, "bot"));
+        db.session.add(models.chatHistory(chatBot.DB_Id, MESSAGE_LENGTH_ERROR_MESSAGE, "bot"));
     else:
         db.session.add(models.chatHistory(data["sender"], data["msg"], "user"));
     db.session.commit();
@@ -137,8 +138,16 @@ def index():
     emit_chat_history(CHAT_HISTORY_BROADCAST_CHANNEL)
     
     return flask.render_template("index.html")
+    
+def login_bot(botEmail, botPicUrl):
+    if len(models.registeredUsers.query.filter_by(email=botEmail, picUrl=botPicUrl).all()) == 0:
+        db.session.add(models.registeredUsers(botEmail, botPicUrl))
+        db.session.commit()
+    chatBot.DB_Id = models.registeredUsers.query.filter_by(email=botEmail, picUrl=botPicUrl).first().id
+    
 
 if __name__ == '__main__': 
+    login_bot(BOT_EMAIL, BOT_PIC)
     socketio.run(
         app,
         host=os.getenv('IP', '0.0.0.0'),

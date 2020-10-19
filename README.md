@@ -79,3 +79,7 @@ If you just wish to run the application, it is already deployed on [heroku](http
    - **Resolved** - Setting up google authentication has wound up solving this issue
 10. Currently, the server always emits the chat history to all clients. The client code is the only thing preventing the viewing of the chat history. I should create a room of logged in users and only let the server transmit to the logged in users.
     - **Unresolved** - not attempted yet
+11. Display images in inline
+    - **Unresolved** - Currently unattempted
+12. Display urls as hyperlink
+    - **Unresolved** - Currently unattempted
