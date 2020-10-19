@@ -11,6 +11,7 @@ body {
   border-width: 0px 24px 16px 24px;
   border-radius: 8px 8px 16px 16px;
   padding: 0px;
+  background-color: #996633;
 }
 
 #messageHistory {
@@ -28,6 +29,15 @@ body {
   color: #6600FF;
 }
 
+#obscuredMessageHistory {
+    height: 600px;
+    width: 100%;
+    margin: 0px;
+    padding: 0px;
+    border: 0px;
+    background-color: rgba(255, 255, 255, 0.3);
+}
+
 #chatRoomStats {
   margin: auto;
   width: 66%;
@@ -43,6 +53,7 @@ body {
 li {
     list-style: none;
     border: 1px dotted #000000;
+    min-height: 40px;
 }
 
 .bot {
@@ -52,6 +63,12 @@ li {
 .user {
     opacity: 1.0;
     background: transparent;
+}
+
+.profileImage {
+    height: 38px;
+    float: left;
+    border: 1px solid #000000;
 }
 
 ul {
@@ -68,12 +85,8 @@ form {
     width: 25%;
 }
 
-#sender_input {
-    width: 25%;
-}
-
 #message_input {
-    width: 50%;
+    width: 75%;
 }
 
 #chatRoomStats p {
