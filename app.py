@@ -12,7 +12,7 @@ from flask import request
 CHAT_HISTORY_BROADCAST_CHANNEL = 'Chat history received'
 MAX_MESSAGE_LENGTH = 480
 MESSAGE_LENGTH_ERROR_MESSAGE = "Incoming message was too long and wasn't saved. Please limit messages to {} characters".format(MAX_MESSAGE_LENGTH)
-MAX_DISPLAYED_MESSAGES = 32
+MAX_DISPLAYED_MESSAGES = 14
 BOT_EMAIL = 'DadBot@fakeEmail.com'
 BOT_PIC = '/static/origami_dragon.jpg'
 

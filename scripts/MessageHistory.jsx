@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Socket } from './Socket';
+import escape from 'underscore/modules/escape.js';
 
 export function MessageHistory() {
     const [messages, setMessages] = React.useState([]);
@@ -21,6 +22,11 @@ export function MessageHistory() {
         });
     }
     
+    function createMessageHTML(senderPicUrl, messageHTML) {
+        let HTMLstr = '<img src="' + senderPicUrl + '" class="profileImage" />' + messageHTML;
+        return {__html: HTMLstr};
+    }
+    
     setup();
     
     return (
@@ -28,7 +34,7 @@ export function MessageHistory() {
             {loggedIn ?
                 <ul>
                     {messages.map((message, index) =>
-                        <li key={index} className={message['class']}><img src={message['senderPic']} className='profileImage' />: {message['message']}</li>)}
+                        <li key={index} className={message['class']} dangerouslySetInnerHTML={createMessageHTML(message['senderPic'], message['message'])} ></li>)}
                 </ul>
             :
                 <div id="obscuredMessageHistory">

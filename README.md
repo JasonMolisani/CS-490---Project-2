@@ -51,7 +51,7 @@ If you just wish to run the application, it is already deployed on [heroku](http
 2. Make number of connected users always visible
    - **Resolved** - Added a new react component to the page that takes in the number of users and updates it with hooks triggered on emits that will have a new value
 3. Make sure page doesn't scroll
-   - **Resolved** - Fixed the number of displayed messages to not exceed a certain amount (currently set at 24)
+   - **Resolved** - Fixed the number of displayed messages to not exceed a certain amount (currently set at 14)
 4. Chatbot
    - Uses its own class
      - **Resolved** - Chat bot is a class that is the server can ask for responses. Addtional functions still need to be added to customize chat bot's responses, but the querying of chat bot and broadcasting its' replies is finished
@@ -82,4 +82,6 @@ If you just wish to run the application, it is already deployed on [heroku](http
 11. Display images in inline
     - **Unresolved** - Currently unattempted
 12. Display urls as hyperlink
+    - **Unresolved** - Currently unattempted
+13. MessageHistory now parses html tags that are included in messages. I should add a method to the bot the screens and cleans incoming messages to prevent abuse
     - **Unresolved** - Currently unattempted
