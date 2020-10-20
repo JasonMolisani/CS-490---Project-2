@@ -40,16 +40,18 @@ anonNum = 0
 numUsers = 0
 
 chatBot = bot.Bot()
+loggedInUsers = set()
 
 def emit_chat_history(channel):
     # The list conprehension will be used once the database gets redesigned, but until then the patchy for loop will do
     chat_history = [ \
         {'senderPic': db_message.sender.picUrl, 'message': db_message.message, 'class': db_message.senderClass} for db_message \
         in db.session.query(models.chatHistory).all()]
-        
-    socketio.emit(channel, {
-        'chatHistory': chat_history[-min(len(chat_history), MAX_DISPLAYED_MESSAGES):]
-    })
+    
+    for sid in loggedInUsers:
+        socketio.emit(channel, {
+            'chatHistory': chat_history[-min(len(chat_history), MAX_DISPLAYED_MESSAGES):]
+        }, room=sid)
 
 
 @socketio.on('connect')
@@ -69,9 +71,13 @@ def on_connect():
 def on_disconnect():
     print ('someone disconnected!')
     
+    global loggedInUsers
+    if request.sid in loggedInUsers:
+        loggedInUsers.remove(request.sid)
+    
     # Update the number of users currently connected and broadcast that change
     global numUsers
-    numUsers -= 1
+    numUsers = len(loggedInUsers)
     socketio.emit('someone disconnected', {
         'numUsers': numUsers
     })
@@ -92,6 +98,9 @@ def accept_login(data):
     
     senderDBkey = models.registeredUsers.query.filter_by(email=email, picUrl=profilePic).first().id
     
+    global loggedInUsers
+    loggedInUsers.add(request.sid)
+    
     socketio.emit('login accepted', {
         'email': email,
         'picUrl': profilePic,
@@ -99,7 +108,7 @@ def accept_login(data):
     }, room=request.sid)
     
     global numUsers
-    numUsers += 1
+    numUsers = len(loggedInUsers)
     
     socketio.emit('someone logged in', {
         'numUsers': numUsers

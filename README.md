@@ -19,6 +19,13 @@ If you just wish to run the application, it is already deployed on [heroku](http
 9. Open this file in vim: `sudo vim /var/lib/pgsql9/data/pg_hba.conf`
 10. Replace all values of `ident` with `md5` in Vim (you may need to type this instead of copying and pasting): `:%s/ident/md5/g`
 11. Save the changes and close vim: `:wq`
+12. Create a [google developer account](https://console.developers.google.com/)
+13. Under `Credentials` (in the side bar), click `+ CREATE CREDENTIALS` and select `OAuth Client ID` from the drop down
+14. Select `Web Application` and give it an appropriate name
+15. Follow the steps to get this running locally and copy the address of the preview. Add this address as a `URI` to both `Authorized Javascript origins` and `Authorized redirect URIs`
+16. Click `CREATE` to save this
+17. Back at the `Credentials` page, find your new client ID under `OAuth 2.0 Client IDs` and copy the `Client ID` (use the icon immediately to the right of the client ID)
+18. Open `GoogleButton.jsx` (found in the `scripts` sub-folder) and replace the value of the string being assigned on line 28 with your `Client ID`
 
 ### Steps to take every time to run this locally
 1. (Re)start PSQL: `sudo service postgresql restart`
@@ -33,9 +40,10 @@ If you just wish to run the application, it is already deployed on [heroku](http
 3. Create a new app with `heroku create`
 4. Create a database for the new app with `heroku addons:create heroku-postgresql:hobby-dev`
 5. Tell heroku to get ready? `heroku pg:wait`
-6. Push the database to heroku `heroku pg:push postgres DATABASE_URL`
+6. Push the database to heroku `heroku pg:push postgres HEROKU_POSTGRESQL_ROSE_URL`
 7. You can use `heroku pg:psql` to have the terminal start using psql queries to the heroku verion of the database to check things (or just skip this step) (`\q` will exit back to the regular terminal)
 8. Push the current repository up to heroku with `git push heroku master`
+9. Open the google developer account you created to get this running locally and add the domain where your heroku deployment is to both `Authorized Javascript origins` and `Authorized redirect URIs`
 
 ## Technical Problems
 1. When deplying to Heroku, I had a hard time using `SELECT * FROM [my_database]` to test that my databse had been pushed up correctly. I searched the local database to see that `flask_sqlalchemy` had converted my chosen class name (`ChatHistory_DB`) to `chat_history_DB`, but when I ran `SELECT * FROM chat_history_DB` I kept getting an error about there not being a database with that name. The `usps` database that still existed from the lectures had been pushed up, but my new database wasn't resonding to the select query. Wondering if it was something in the table name, I did an internet search about table naming conventions that led me [here](https://stackoverflow.com/questions/2878248/postgresql-naming-conventions). There was a bunch of useful info, but the key part was "Postgresql treats identifiers case insensitively when not quoted (it actually folds them to lowercase internally), and case sensitively when quoted." This means my query of `SELECT * FROM chat_history_DB` was being treated the same as `SELECT * FROM chat_history_db`. In order to preserve the capitolization, I needed to rephrase the query as `SELECT * FROM "chat_history_DB"` (which worked).
@@ -44,6 +52,7 @@ If you just wish to run the application, it is already deployed on [heroku](http
 4. When making the help command for the chat bot, I made a rather long string. This was the first time I had sent a long message through the chat app and when I prompted the chat bot to see that response, I didn't see anything. The bot still responded to the rest of my messages, but not this. Looking at the server logs, I was able to see that the problem occurred when I tried to save that message in the chat history database. When I made the database, I didn't put too much thought into it and left only 120 characters as the maximum amount i could store for a single message. Having identified the problem, there were two solutions: Redo the database to allow for the longer message, or make sure chat bot will never send a message that is too long and add a check in the server to handle user submitted messages that are too long. Redoing the database only temporarily solves the problem as the limit will still exist, just at a higher level. I implemented the second solution, but did add the database resize as a possible improvement for the future.
 5. When starting milestone 2, I needed to set up the server to only respond to the specific user who was had just logged in. For milestone 1 I got by with broadcasting everything and having the clients and server pick put the messages that were relevant to them. This left a loophole that could have multiple users be assigned the same default username. This wasn't a big problem since no security regarding the usernames had been implemented anyway. With the implementation of OAurh, this was no longer accdeptable. Searching around on stack overflow eventually revealed that I could use the default room given by `request.sid` to communicate with the single client who had sent the message the server was replying to. Unfortunately, it took me longer than I would like to admit to understand that I needed to explicitly import request from the flask library. I couldn't just refer to request by importing flask (though there may be a way using `flask.request.sid` or something like that).
 6. With the idea of a logged in and not logged in state, came the need to render components in different ways to reflect that change. Googling `react conditional html` brought me to a [webpage](https://reactjs.org/docs/conditional-rendering.html) with a number of different ways to do this. I decided to use the if version, though the example used a prop instead of a state. Using a react state worked just as well.
+7. When deploying this milestone to its own heroku app, I had difficulties getting the database to link properly. This mostly happened because I tried to fix the requirements.txt first. In testing that, I saw that I did not have a `DATABASE_URL` environmental value. I manually added it by copying from the previous deployment. This caused my efforts to copy the tables over with `heroku pg:push postgres DATABASE_URL` to cause errors as `DATABASE_URL` was no longer available. I used the new value (`HEROKU_POSTGRESQL_ROSE_URL`) heroku was suggesting and was able to push the databases up, but the running code could not find the databases. After a lot of time searching, I eventually noticed that heroku had added `HEROKU_POSTGRESQL_ROSE_URL` as its own environmental variable and the value for `DATABASE_URL` that I copied from the preivous deployment was different from my local envoronmental variable. This (and a bit of internet searching) let me understand that heroku creates its own environmental variables for databases that are pushed up. Unfortunately, my code was still reading the `DATABASE_URL` environmental variable, which wasn't tied to the right table. I changed the code (and my local .env file) to look for (and store) an environmental variable named `HEROKU_POSTGRESQL_ROSE_URL` and everything started working again on heroku (and continued working locally).
 
 ## TODOs and Improvements
 1. Add a background image to the chat room
@@ -78,7 +87,7 @@ If you just wish to run the application, it is already deployed on [heroku](http
 9. My patch of default usernames could assign to users the same username if an already connected user manually deletes their assigned username and someone new connects while that field is blank
    - **Resolved** - Setting up google authentication has wound up solving this issue
 10. Currently, the server always emits the chat history to all clients. The client code is the only thing preventing the viewing of the chat history. I should create a room of logged in users and only let the server transmit to the logged in users.
-    - **Unresolved** - not attempted yet
+    - **Resolved** - The server now maintains a set of logged in user's `request.sid` values and transmits chat history only to those rooms. This could probably be further improved using the `rooms` from `socket.io` to send a single message to the room of logged in users instead of a series of individual copies of the message to each logged in users personal room.
 11. Display images in inline
     - **Resolved** - images are being rendered and basic css is still implemented
 12. Display urls as hyperlink
@@ -86,4 +95,4 @@ If you just wish to run the application, it is already deployed on [heroku](http
 13. MessageHistory now parses html tags that are included in messages. I should add a method to the bot the screens and cleans incoming messages to prevent abuse
     - **Unresolved** - Currently unattempted
 14. The number of users in the chat room may be lower than expedcted. It decreases on every disconnect, but only increases with login
-    - **Unresolved** - The points where I am emitting the number of users is fine, but I should change to create a list of clients that are logged in (see improvement 10) and be sending the length of that list instead of tracking on an int. The actual implementation will have something to do with socketio's rooms and may not actually be a list.
+    - **Resolved** - (implemented this I did use a set of sid values) The points where I am emitting the number of users is fine, but I should change to create a list of clients that are logged in (see improvement 10) and be sending the length of that list instead of tracking on an int. The actual implementation will have something to do with socketio's rooms and may not actually be a list.
