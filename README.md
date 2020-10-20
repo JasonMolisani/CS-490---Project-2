@@ -80,7 +80,7 @@ If you just wish to run the application, it is already deployed on [heroku](http
 10. Currently, the server always emits the chat history to all clients. The client code is the only thing preventing the viewing of the chat history. I should create a room of logged in users and only let the server transmit to the logged in users.
     - **Unresolved** - not attempted yet
 11. Display images in inline
-    - **Partially Resolved** - images are being rendered, but css is still needed (images all have the same class)
+    - **Resolved** - images are being rendered and basic css is still implemented
 12. Display urls as hyperlink
     - **Resolved** - Valid URLs that are not also images links, become clickable hyperlinks
 13. MessageHistory now parses html tags that are included in messages. I should add a method to the bot the screens and cleans incoming messages to prevent abuse
