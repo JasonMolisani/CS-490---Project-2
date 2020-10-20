@@ -106,7 +106,7 @@ class Bot:
             if self.isValidURL(word):
                 if self.isImageURL(word):
                     print("image")
-                    newWord = '<img src="' + word + '" class="embedded image" />'
+                    newWord = '<img src="' + word + '" class="embeddedImage" />'
                 else:
                     print("url")
                     newWord = '<a href="' + word + '">' + word + '</a>'

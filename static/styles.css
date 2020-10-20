@@ -71,6 +71,11 @@ li {
     border: 1px solid #000000;
 }
 
+.embeddedImage {
+    max-height: 200px;
+    max-width: 200px;
+}
+
 ul {
     padding: 0px;
     margin: 0px;

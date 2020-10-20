@@ -85,3 +85,5 @@ If you just wish to run the application, it is already deployed on [heroku](http
     - **Resolved** - Valid URLs that are not also images links, become clickable hyperlinks
 13. MessageHistory now parses html tags that are included in messages. I should add a method to the bot the screens and cleans incoming messages to prevent abuse
     - **Unresolved** - Currently unattempted
+14. The number of users in the chat room may be lower than expedcted. It decreases on every disconnect, but only increases with login
+    - **Unresolved** - The points where I am emitting the number of users is fine, but I should change to create a list of clients that are logged in (see improvement 10) and be sending the length of that list instead of tracking on an int. The actual implementation will have something to do with socketio's rooms and may not actually be a list.
