@@ -111,14 +111,15 @@ def accept_login(data):
 def on_new_message(data):
     print("Got an event for adding this message to the chat history:\n\t{}: {}".format(data["sender"], data["msg"]))
 
+    treatedMsg = chatBot.adjustMessageHTML(data["msg"])
     if len(models.registeredUsers.query.filter_by(id=data["sender"]).all()) == 0:
         # If the sender id is not in the database, don't add the message
         print("Message not added due to invalid sender ID")
         return
-    elif len(data["msg"]) > MAX_MESSAGE_LENGTH:
+    elif len(treatedMsg) > MAX_MESSAGE_LENGTH:
         db.session.add(models.chatHistory(chatBot.DB_Id, MESSAGE_LENGTH_ERROR_MESSAGE, "bot"));
     else:
-        db.session.add(models.chatHistory(data["sender"], data["msg"], "user"));
+        db.session.add(models.chatHistory(data["sender"], treatedMsg, "user"));
     db.session.commit();
     
     emit_chat_history(CHAT_HISTORY_BROADCAST_CHANNEL)

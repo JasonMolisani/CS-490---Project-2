@@ -1,5 +1,6 @@
 import flask_socketio
 import requests
+from rfc3987 import match
 
 MAX_MESSAGE_LENGTH = 120
 
@@ -86,3 +87,33 @@ class Bot:
         errMsg = "Sorry, '{}' is not a recognized command.".format(badCommand)
         errMsg += " To see a list of known commands, use '!!help'"
         return {'msg': errMsg, 'sender': self.DB_Id}
+
+    def isValidURL(self, untestedStr):
+        return match(untestedStr, rule='IRI') is not None
+    
+    def isImageURL(self, validURL):
+        image_formats = ("image/png", "image/jpeg", "image/jpg")
+        r = requests.head(validURL)
+        if r.headers["content-type"] in image_formats:
+            return True
+        return False
+
+    def adjustMessageHTML(self, rawMessage):
+        words = rawMessage.split()
+        processedMessage = ""
+        for word in words:
+            print("Testing: " + word)
+            if self.isValidURL(word):
+                if self.isImageURL(word):
+                    print("image")
+                    newWord = '<img src="' + word + '" class="embedded image" />'
+                else:
+                    print("url")
+                    newWord = '<a href="' + word + '">' + word + '</a>'
+            else:
+                print("text")
+                newWord = word
+            processedMessage += " " + newWord
+        if len(processedMessage) > 0:
+            processedMessage = processedMessage[1:]
+        return processedMessage
