@@ -1,7 +1,8 @@
 version: 2.1
 
 orbs:
-  python: circleci/python@0.2.1
+  python: circleci/python@0.2.1]
+  heroku: circleci/heroku@0.0.10.
 
 jobs:
   build-and-test:
@@ -17,24 +18,11 @@ jobs:
       - run:
           command: python tests/mocked_unit_tests.py
           name: Mocked Tests
-  deploy:
-    machine:
-        enabled: true
-    environment:
-      HEROKU_APP: "arcane-earth-95627"
-    steps:
-      - checkout
-    #   - run:
-    #       name: Setup Heroku
-    #       command: .circleci/setup-heroku.sh
-      - run:
-          name: Heroku deployment
-          command: git push heroku master
 
 workflows:
   main:
     jobs:
       - build-and-test
-      - deploy:
+      - heroku/deploy-via-git: # Use the pre-configured job, deploy-via-git
           requires:
             - build-and-test
