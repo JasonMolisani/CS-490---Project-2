@@ -23,9 +23,9 @@ jobs:
     environment:
       HEROKU_APP: "arcane-earth-95627"
     steps:
-      - run:
-          name: Setup Heroku
-          command: .circleci/setup-heroku.sh
+    #   - run:
+    #       name: Setup Heroku
+    #       command: .circleci/setup-heroku.sh
       - run:
           name: Heroku deployment
           command: |
