@@ -17,8 +17,18 @@ jobs:
       - run:
           command: python tests/mocked_unit_tests.py
           name: Mocked Tests
+  deploy:
+    environment:
+      HEROKU_APP: "arcane-earth-95627"
+    steps:
+      - run:
+          name: Heroku deployment
+          command: git push heroku master
 
 workflows:
   main:
     jobs:
       - build-and-test
+      - deploy:
+          requires:
+            - build-and-test
