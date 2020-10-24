@@ -40,7 +40,7 @@ If you just wish to run the application, it is already deployed on [heroku](http
 3. Create a new app with `heroku create`
 4. Create a database for the new app with `heroku addons:create heroku-postgresql:hobby-dev`
 5. Tell heroku to get ready? `heroku pg:wait`
-6. Push the database to heroku `heroku pg:push postgres HEROKU_POSTGRESQL_ROSE_URL`
+6. Push the database to heroku `heroku pg:push postgres DATABASE_URL`
 7. You can use `heroku pg:psql` to have the terminal start using psql queries to the heroku verion of the database to check things (or just skip this step) (`\q` will exit back to the regular terminal)
 8. Push the current repository up to heroku with `git push heroku master`
 9. Open the google developer account you created to get this running locally and add the domain where your heroku deployment is to both `Authorized Javascript origins` and `Authorized redirect URIs`
