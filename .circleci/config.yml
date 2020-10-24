@@ -18,6 +18,8 @@ jobs:
           command: python tests/mocked_unit_tests.py
           name: Mocked Tests
   deploy:
+    machine:
+        enabled: true
     environment:
       HEROKU_APP: "arcane-earth-95627"
     steps:
