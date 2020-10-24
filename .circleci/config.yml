@@ -24,8 +24,16 @@ jobs:
       HEROKU_APP: "arcane-earth-95627"
     steps:
       - run:
+          name: Setup Heroku
+          command: bash .circleci/setup-heroku.sh # run a script to set up Heroku
+
+      - run:
           name: Heroku deployment
-          command: git push heroku master
+          command: |
+            git push heroku sequential-branch-filter:master
+            heroku run rake db:migrate
+            sleep 5 # sleep for 5 seconds to wait for dynos
+            heroku restart
 
 workflows:
   main:
