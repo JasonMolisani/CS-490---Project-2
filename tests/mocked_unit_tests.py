@@ -15,7 +15,7 @@ class SplitTestCase(unittest.TestCase):
         self.failure_test_params = [
             {
                 KEY_INPUT: "",
-                KEY_EXPECTED: "a"
+                KEY_EXPECTED: ""
             }
         ]
 
