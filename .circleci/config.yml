@@ -29,10 +29,7 @@ jobs:
     #       command: .circleci/setup-heroku.sh
       - run:
           name: Heroku deployment
-          command: |
-            git push heroku master
-            sleep 5
-            heroku restart
+          command: git push heroku master
 
 workflows:
   main:
