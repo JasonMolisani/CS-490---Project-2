@@ -12,10 +12,10 @@ jobs:
       - python/install-deps
       - python/save-cache
       - run:
-          command: python unmocked_unit_tests.py
+          command: python tests/unmocked_unit_tests.py
           name: Unmocked Tests
       - run:
-          command: python mocked_unit_tests.py
+          command: python tests/mocked_unit_tests.py
           name: Mocked Tests
 
 workflows:
