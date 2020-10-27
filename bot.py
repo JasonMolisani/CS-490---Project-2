@@ -92,6 +92,8 @@ class Bot:
         return match(untestedStr, rule='IRI') is not None
     
     def isImageURL(self, validURL):
+        if not self.isValidURL(validURL):
+            return False
         image_formats = ("image/png", "image/jpeg", "image/jpg")
         r = requests.head(validURL)
         if r.headers["content-type"] in image_formats:
@@ -102,16 +104,15 @@ class Bot:
         words = rawMessage.split()
         processedMessage = ""
         for word in words:
-            print("Testing: " + word)
-            if self.isValidURL(word):
-                if self.isImageURL(word):
-                    print("image")
-                    newWord = '<img src="' + word + '" class="embeddedImage" />'
+            try:
+                if self.isValidURL(word):
+                    if self.isImageURL(word):
+                        newWord = '<img src="' + word + '" class="embeddedImage" />'
+                    else:
+                        newWord = '<a href="' + word + '">' + word + '</a>'
                 else:
-                    print("url")
-                    newWord = '<a href="' + word + '">' + word + '</a>'
-            else:
-                print("text")
+                    newWord = word
+            except:
                 newWord = word
             processedMessage += " " + newWord
         if len(processedMessage) > 0:

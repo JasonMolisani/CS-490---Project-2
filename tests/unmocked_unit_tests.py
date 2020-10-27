@@ -13,7 +13,7 @@ testBot = bot.Bot(KEY_BOT_ID)
 class UnmockedTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.success_test_bot_help = [
+        self.bot_help_test_params = [
             {
                 KEY_INPUT: ["help", "about"],
                 KEY_EXPECTED: {
@@ -58,28 +58,155 @@ class UnmockedTestCase(unittest.TestCase):
             }
         ]
         
-        self.failure_test_params = [
+        self.bot_about_test_params = [
             {
                 KEY_INPUT: "",
-                KEY_EXPECTED: "a"
+                KEY_EXPECTED: {
+                    'msg': "I am your friendly neighborhood DadBot, here to help. To see a list of my commands, type '!!help'",
+                    'sender': KEY_BOT_ID
+                    }
+            }
+        ]
+        
+        self.bot_echo_test_params = [
+            {
+                KEY_INPUT: ["echo"],
+                KEY_EXPECTED: {
+                    'msg': "",
+                    'sender': KEY_BOT_ID
+                    }
+            },
+            {
+                KEY_INPUT: ["echo", "this string gets repeated"],
+                KEY_EXPECTED: {
+                    'msg': "this string gets repeated",
+                    'sender': KEY_BOT_ID
+                    }
+            }
+        ]
+        
+        self.validURL_test_params = [
+            {
+                KEY_INPUT: "dsag",
+                KEY_EXPECTED: False
+            },
+            {
+                KEY_INPUT: "https://www.google.com",
+                KEY_EXPECTED: True
+            },
+            {
+                KEY_INPUT: "https://www.telegraph.co.uk/content/dam/Travel/2018/January/white-plane-sky.jpg?impolicy=logo-overlay",
+                KEY_EXPECTED: True
+            },
+            {
+                KEY_INPUT: "https://www.telegraph.co.uk/content/dam/Travel/2018/January/white-plane-sky.jpg",
+                KEY_EXPECTED: True
+            },
+            {
+                KEY_INPUT: "",
+                KEY_EXPECTED: False
+            }
+        ]
+        
+        self.imageURL_test_params = [
+            {
+                KEY_INPUT: "dsag",
+                KEY_EXPECTED: False
+            },
+            {
+                KEY_INPUT: "https://www.google.com",
+                KEY_EXPECTED: False
+            },
+            {
+                KEY_INPUT: "https://www.telegraph.co.uk/content/dam/Travel/2018/January/white-plane-sky.jpg?impolicy=logo-overlay",
+                KEY_EXPECTED: True
+            },
+            {
+                KEY_INPUT: "https://www.telegraph.co.uk/content/dam/Travel/2018/January/white-plane-sky.jpg",
+                KEY_EXPECTED: True
+            },
+            {
+                KEY_INPUT: "",
+                KEY_EXPECTED: False
+            }
+        ]
+        
+        self.adjustMessageHTML_test_params = [
+            {
+                KEY_INPUT: "Message with no images or URLs",
+                KEY_EXPECTED: "Message with no images or URLs"
+            },
+            {
+                KEY_INPUT: "https://www.google.com",
+                KEY_EXPECTED: '<a href="https://www.google.com">https://www.google.com</a>'
+            },
+            {
+                KEY_INPUT: "Message with words and a URL: https://www.google.com",
+                KEY_EXPECTED: 'Message with words and a URL: <a href="https://www.google.com">https://www.google.com</a>'
+            },
+            {
+                KEY_INPUT: "https://www.telegraph.co.uk/content/dam/Travel/2018/January/white-plane-sky.jpg",
+                KEY_EXPECTED: '<img src="https://www.telegraph.co.uk/content/dam/Travel/2018/January/white-plane-sky.jpg" class="embeddedImage" />'
+            },
+            {
+                KEY_INPUT: "Message with words and an image: https://www.telegraph.co.uk/content/dam/Travel/2018/January/white-plane-sky.jpg",
+                KEY_EXPECTED: 'Message with words and an image: <img src="https://www.telegraph.co.uk/content/dam/Travel/2018/January/white-plane-sky.jpg" class="embeddedImage" />'
+            },
+            {
+                KEY_INPUT: "Message with words, a URL, and an image: https://www.google.com https://www.telegraph.co.uk/content/dam/Travel/2018/January/white-plane-sky.jpg",
+                KEY_EXPECTED: 'Message with words, a URL, and an image: <a href="https://www.google.com">https://www.google.com</a> <img src="https://www.telegraph.co.uk/content/dam/Travel/2018/January/white-plane-sky.jpg" class="embeddedImage" />'
+            },
+            {
+                KEY_INPUT: "",
+                KEY_EXPECTED: ''
             }
         ]
 
 
-    def test_success(self):
-        for test in self.success_test_bot_help:
+    def test_bot_help(self):
+        for test in self.bot_help_test_params:
             response = testBot.help(test[KEY_INPUT])
             expected = test[KEY_EXPECTED]
             
             self.assertEqual(response['msg'], expected['msg'])
             self.assertEqual(response['sender'], expected['sender'])
-            
-    def test_failure(self):
-        for test in self.failure_test_params:
-            response = test[KEY_INPUT]
+
+    def test_bot_about(self):
+        for test in self.bot_about_test_params:
+            response = testBot.about()
             expected = test[KEY_EXPECTED]
             
-            self.assertNotEqual(response, expected)
+            self.assertEqual(response['msg'], expected['msg'])
+            self.assertEqual(response['sender'], expected['sender'])
+
+    def test_bot_echo(self):
+        for test in self.bot_echo_test_params:
+            response = testBot.echo(test[KEY_INPUT])
+            expected = test[KEY_EXPECTED]
+            
+            self.assertEqual(response['msg'], expected['msg'])
+            self.assertEqual(response['sender'], expected['sender'])
+    
+    def test_isValidURL(self):
+        for test in self.validURL_test_params:
+            response = testBot.isValidURL(test[KEY_INPUT])
+            expected = test[KEY_EXPECTED]
+            
+            self.assertEqual(response, expected)
+    
+    def test_isImageURL(self):
+        for test in self.imageURL_test_params:
+            response = testBot.isImageURL(test[KEY_INPUT])
+            expected = test[KEY_EXPECTED]
+            
+            self.assertEqual(response, expected)
+    
+    def test_adjustMessageHTML(self):
+        for test in self.adjustMessageHTML_test_params:
+            response = testBot.adjustMessageHTML(test[KEY_INPUT])
+            expected = test[KEY_EXPECTED]
+            
+            self.assertEqual(response, expected)
 
 
 if __name__ == '__main__':
