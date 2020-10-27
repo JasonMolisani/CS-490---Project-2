@@ -1,7 +1,7 @@
 import unittest
 import sys
-sys.path.append('../')
-sys.path.append('./')
+sys.path.append('../') # Allow for imports to work when run from within test folder
+sys.path.append('./')  # Allow for imports to work when run from within project2 folder
 import bot
 
 KEY_INPUT = "input"

@@ -1,4 +1,8 @@
 import unittest
+import sys
+sys.path.append('../') # Allow for imports to work when run from within test folder
+sys.path.append('./')  # Allow for imports to work when run from within project2 folder
+
 
 KEY_INPUT = "input"
 KEY_EXPECTED = "expected"
