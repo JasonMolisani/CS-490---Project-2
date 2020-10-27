@@ -97,3 +97,8 @@ If you just wish to run the application, it is already deployed on [heroku](http
     - **Unresolved** - Currently unattempted
 14. The number of users in the chat room may be lower than expedcted. It decreases on every disconnect, but only increases with login
     - **Resolved** - (implemented this I did use a set of sid values) The points where I am emitting the number of users is fine, but I should change to create a list of clients that are logged in (see improvement 10) and be sending the length of that list instead of tracking on an int. The actual implementation will have something to do with socketio's rooms and may not actually be a list.
+15. The following methods needed access to request.sid, which is proving difficult to mock
+    - app.on_disconnect()
+    - app.accept_login(data)
+16. The following still need to be tested, but require mocking of the database
+    - app.login_bot() - Skipped since it is just database calls and no other logic

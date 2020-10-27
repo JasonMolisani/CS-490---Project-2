@@ -85,6 +85,37 @@ class UnmockedTestCase(unittest.TestCase):
             }
         ]
         
+        self.bot_error_test_params = [
+            {
+                KEY_INPUT: "",
+                KEY_EXPECTED: {
+                    'msg': "Sorry, '' is not a recognized command. To see a list of known commands, use '!!help'",
+                    'sender': KEY_BOT_ID
+                    }
+            },
+            {
+                KEY_INPUT: "NULL",
+                KEY_EXPECTED: {
+                    'msg': "Sorry, 'NULL' is not a recognized command. To see a list of known commands, use '!!help'",
+                    'sender': KEY_BOT_ID
+                    }
+            },
+            {
+                KEY_INPUT: "flibertygibbet",
+                KEY_EXPECTED: {
+                    'msg': "Sorry, 'flibertygibbet' is not a recognized command. To see a list of known commands, use '!!help'",
+                    'sender': KEY_BOT_ID
+                    }
+            },
+            {
+                KEY_INPUT: "Let's type a whole sentence here.",
+                KEY_EXPECTED: {
+                    'msg': "Sorry, 'Let's type a whole sentence here.' is not a recognized command. To see a list of known commands, use '!!help'",
+                    'sender': KEY_BOT_ID
+                    }
+            }
+        ]
+        
         self.validURL_test_params = [
             {
                 KEY_INPUT: "dsag",
@@ -182,6 +213,14 @@ class UnmockedTestCase(unittest.TestCase):
     def test_bot_echo(self):
         for test in self.bot_echo_test_params:
             response = testBot.echo(test[KEY_INPUT])
+            expected = test[KEY_EXPECTED]
+            
+            self.assertEqual(response['msg'], expected['msg'])
+            self.assertEqual(response['sender'], expected['sender'])
+
+    def test_bot_error(self):
+        for test in self.bot_error_test_params:
+            response = testBot.error(test[KEY_INPUT])
             expected = test[KEY_EXPECTED]
             
             self.assertEqual(response['msg'], expected['msg'])

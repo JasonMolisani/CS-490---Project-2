@@ -5,7 +5,6 @@ import os
 import flask
 import flask_sqlalchemy
 import flask_socketio
-import models
 import bot
 from flask import request
 
@@ -17,6 +16,7 @@ BOT_EMAIL = 'DadBot@fakeEmail.com'
 BOT_PIC = '/static/origami_dragon.jpg'
 
 app = flask.Flask(__name__)
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 socketio = flask_socketio.SocketIO(app)
 socketio.init_app(app, cors_allowed_origins="*")
@@ -29,6 +29,7 @@ database_uri = os.environ['DATABASE_URL']
 app.config['SQLALCHEMY_DATABASE_URI'] = database_uri
 
 db = flask_sqlalchemy.SQLAlchemy(app)
+import models
 db.init_app(app)
 db.app = app
 
