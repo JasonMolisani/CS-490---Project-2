@@ -1,6 +1,7 @@
 import unittest
 import sys
 sys.path.append('../')
+sys.path.append('./')
 import bot
 
 KEY_INPUT = "input"
