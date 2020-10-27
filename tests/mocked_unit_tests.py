@@ -6,8 +6,6 @@ import bot
 import unittest.mock as mock
 import json
 import app
-from app import db
-from io import StringIO
 
 KEY_INPUT = "input"
 KEY_EXPECTED = "expected"
@@ -19,7 +17,7 @@ KEY_USER_LIST = 'loggedInUsers'
 KEY_REQUEST_SID = 'sid'
 KEY_CHAT_HISTORY = 'chtHist'
 
-testBot = bot.Bot(KEY_BOT_ID)
+TESTBOT = bot.Bot(KEY_BOT_ID)
 
 class Mock_Request:
     def __init__(self, json_str=''):
@@ -211,7 +209,7 @@ class MockedTestCase(unittest.TestCase):
         ]
 
     @staticmethod
-    def mock_request_response(url, params={}, headers={}):
+    def mock_request_response(url, params=None, headers=None):
         if (url == "https://api.funtranslations.com/translate/pirate.json"):
             resp =  {
                         'contents': {
@@ -250,7 +248,7 @@ class MockedTestCase(unittest.TestCase):
     def test_bot_parseCommands(self):
         for test in self.bot_parseCommand_test_params:
             with mock.patch('requests.get', self.mock_request_response):
-                response = testBot.parseCommand(test[KEY_INPUT])
+                response = TESTBOT.parseCommand(test[KEY_INPUT])
             expected = test[KEY_EXPECTED]
             
             self.assertEqual(response['msg'], expected['msg'])
@@ -270,24 +268,7 @@ class MockedTestCase(unittest.TestCase):
                     
                     self.assertEqual(response[KEY_CHANNEL], expected[KEY_CHANNEL])
                     self.assertEqual(response[KEY_DATA], expected[KEY_DATA])
-    
-    # def test_app_on_disconnect(self):
-    #     for test in self.app_on_disconnect_test_params:
-    #         global initialNumUsers
-    #         initialNumUsers = test[KEY_INPUT][KEY_NUM_USERS]
-    #         global loggedInUsers
-    #         loggedInUsers = test[KEY_INPUT][KEY_USER_LIST]
-    #         with mock.patch('app.socketio.emit', self.mock_emit):
-    #             try:
-    #                 with mock.patch('flask.request.sid', test[KEY_INPUT][KEY_REQUEST_SID]):
-    #                     on_disconnect()
-    #                 self.assertEqual("no mocked emit sent", "")
-    #             except NameError as response_str:
-    #                 response = json.loads(str(response_str))
-    #                 expected = test[KEY_EXPECTED]
-                    
-    #                 self.assertEqual(response[KEY_CHANNEL], expected[KEY_CHANNEL])
-    #                 self.assertEqual(response[KEY_DATA], expected[KEY_DATA])
+
     @mock.patch('sqlalchemy.orm.session.Session.query', Mock_DB)
     def test_emit_chat_history(self):
         for test in self.app_emit_chat_history_test_params:

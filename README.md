@@ -98,7 +98,10 @@ If you just wish to run the application, it is already deployed on [heroku](http
 14. The number of users in the chat room may be lower than expedcted. It decreases on every disconnect, but only increases with login
     - **Resolved** - (implemented this I did use a set of sid values) The points where I am emitting the number of users is fine, but I should change to create a list of clients that are logged in (see improvement 10) and be sending the length of that list instead of tracking on an int. The actual implementation will have something to do with socketio's rooms and may not actually be a list.
 15. The following methods needed access to request.sid, which is proving difficult to mock
-    - app.on_disconnect()
-    - app.accept_login(data)
+    - **Unresolved** app.on_disconnect()
+    - **Unresolved** app.accept_login(data)
 16. The following still need to be tested, but require mocking of the database
-    - app.login_bot() - Skipped since it is just database calls and no other logic
+    - **Unresolved** app.login_bot() - Skipped since it is just database calls and no other logic
+17. Pylint has identified that I did a very poor job of following the python naming conventions. However, fixing that will likely break my code 20 different ways as the rename only seems to work in a single file. Especially with the databases. Maybe if there is enough time I will go back to choose the correct one of snake_case and PascalCase as the situation requires. I'll make a point of following that from now on, but doing this busy work for a project no one will really touch again in two weeks is silly.
+    - **Unresolved** - Currently Unattempted
+18. This is just me acknowledging that I saw that pylint was unhappy I didn't group my imports into one block in the test files. Pylint is stupid. I can not group those imports since I need to modify the search path for my code to find the rest of the imports (hence these imports must be after the `sys.path.append` lines), but U can't do that without importing sys (which needs to be before `sys.path.append`)

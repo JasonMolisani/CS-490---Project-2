@@ -8,7 +8,7 @@ KEY_INPUT = "input"
 KEY_EXPECTED = "expected"
 KEY_BOT_ID = 42
 
-testBot = bot.Bot(KEY_BOT_ID)
+TESTBOT = bot.Bot(KEY_BOT_ID)
 
 class UnmockedTestCase(unittest.TestCase):
 
@@ -196,7 +196,7 @@ class UnmockedTestCase(unittest.TestCase):
 
     def test_bot_help(self):
         for test in self.bot_help_test_params:
-            response = testBot.help(test[KEY_INPUT])
+            response = TESTBOT.help(test[KEY_INPUT])
             expected = test[KEY_EXPECTED]
             
             self.assertEqual(response['msg'], expected['msg'])
@@ -204,7 +204,7 @@ class UnmockedTestCase(unittest.TestCase):
 
     def test_bot_about(self):
         for test in self.bot_about_test_params:
-            response = testBot.about()
+            response = TESTBOT.about()
             expected = test[KEY_EXPECTED]
             
             self.assertEqual(response['msg'], expected['msg'])
@@ -212,7 +212,7 @@ class UnmockedTestCase(unittest.TestCase):
 
     def test_bot_echo(self):
         for test in self.bot_echo_test_params:
-            response = testBot.echo(test[KEY_INPUT])
+            response = TESTBOT.echo(test[KEY_INPUT])
             expected = test[KEY_EXPECTED]
             
             self.assertEqual(response['msg'], expected['msg'])
@@ -220,7 +220,7 @@ class UnmockedTestCase(unittest.TestCase):
 
     def test_bot_error(self):
         for test in self.bot_error_test_params:
-            response = testBot.error(test[KEY_INPUT])
+            response = TESTBOT.error(test[KEY_INPUT])
             expected = test[KEY_EXPECTED]
             
             self.assertEqual(response['msg'], expected['msg'])
@@ -228,21 +228,21 @@ class UnmockedTestCase(unittest.TestCase):
     
     def test_isValidURL(self):
         for test in self.validURL_test_params:
-            response = testBot.isValidURL(test[KEY_INPUT])
+            response = TESTBOT.isValidURL(test[KEY_INPUT])
             expected = test[KEY_EXPECTED]
             
             self.assertEqual(response, expected)
     
     def test_isImageURL(self):
         for test in self.imageURL_test_params:
-            response = testBot.isImageURL(test[KEY_INPUT])
+            response = TESTBOT.isImageURL(test[KEY_INPUT])
             expected = test[KEY_EXPECTED]
             
             self.assertEqual(response, expected)
     
     def test_adjustMessageHTML(self):
         for test in self.adjustMessageHTML_test_params:
-            response = testBot.adjustMessageHTML(test[KEY_INPUT])
+            response = TESTBOT.adjustMessageHTML(test[KEY_INPUT])
             expected = test[KEY_EXPECTED]
             
             self.assertEqual(response, expected)
