@@ -200,6 +200,6 @@ if __name__ == "__main__":
     login_bot(BOT_EMAIL, BOT_PIC)
     socketio.run(
         app,
-        host=os.getenv("IP", "127.0.0.1"),
-        port=int(os.getenv("PORT", 5432))
+        host=os.getenv("IP", "0.0.0.0"),
+        port=int(os.getenv("PORT", 8080))
     )
